@@ -1,6 +1,12 @@
 package com.example.myrecyclerview;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,11 +16,17 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     ArrayList<ContactModel> arrContacts = new ArrayList<>();
+    RecyclerView recyclerView;
+    RecyclerContactAdapter adapter;
+    FloatingActionButton btnOpenDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,8 +38,56 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerviewContactList);
+        recyclerView = findViewById(R.id.recyclerviewContactList);
+        btnOpenDialog = findViewById(R.id.btnOpenDialog);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+
+        btnOpenDialog.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Dialog dialog = new Dialog(MainActivity.this);
+                dialog.setContentView(R.layout.add_update_layout);
+
+                EditText edtName = dialog.findViewById(R.id.edtName);
+                EditText edtNumber = dialog.findViewById(R.id.edtNumber);
+                Button btnAction = dialog.findViewById(R.id.btnAction);
+
+                btnAction.setOnClickListener(new View.OnClickListener(){
+
+                    @Override
+                    public void onClick(View view) {
+                        String name = "";
+                        String number = "";
+
+                    if(!edtName.getText().toString().isEmpty()) {
+                        name = edtName.getText().toString();
+                    }else {
+                        Toast.makeText(MainActivity.this, "PLease Enter Contact Name", Toast.LENGTH_SHORT).show();
+                    }
+                        if(!edtNumber.getText().toString().isEmpty()) {
+                            number = edtNumber.getText().toString();
+                        }else {
+                            Toast.makeText(MainActivity.this, "PLease Enter Contact Number", Toast.LENGTH_SHORT).show();
+                        }
+
+                        if (!name.isEmpty() && !number.isEmpty()) {
+                            arrContacts.add(new ContactModel(name, number));
+                            adapter.notifyItemInserted(arrContacts.size() - 1);
+                            recyclerView.scrollToPosition(arrContacts.size() - 1);
+
+                            dialog.dismiss();
+                        }
+
+                    }
+                });
+                dialog.show();
+            }
+        });
+
+
+
 
         /*ContactModel model = new ContactModel(R.drawable.profile_1, "Siddharth", "9876543210");
         ContactModel model2 = new ContactModel(R.drawable.profile_1, "Siddharth", "9876543210");
@@ -48,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         arrContacts.add(new ContactModel(R.drawable.profile_6, "Aman", "9876543210"));
         arrContacts.add(new ContactModel(R.drawable.profile_7, "Yogesh", "9876543210"));
 
-        RecyclerContactAdapter adapter = new RecyclerContactAdapter(this, arrContacts);
+        adapter = new RecyclerContactAdapter(this, arrContacts);
         recyclerView.setAdapter(adapter);
     }
 }

@@ -12,4 +12,11 @@ public class ContactModel {
         this.txtName = txtName;
         this.txtNumber = txtNumber;
     }
+
+
+    ContactModel(String txtName, String txtNumber) {
+        this.txtName = txtName;
+        this.txtNumber = txtNumber;
+        this.imgProfile = R.drawable.profile_1; // Default profile image
+    }
 }
