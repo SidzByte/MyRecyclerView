@@ -1,7 +1,9 @@
 package com.example.myrecyclerview;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,7 +80,7 @@ public class RecyclerContactAdapter extends RecyclerView.Adapter<RecyclerContact
                         }
 
                         if (!name.isEmpty() && !number.isEmpty()) {
-                            arrContacts.set(position, new ContactModel(name, number));
+                            arrContacts.set(position, new ContactModel(arrContacts.get(position).imgProfile, name, number));
                             notifyItemChanged(position);
 
                             dialog.dismiss();
@@ -87,6 +89,34 @@ public class RecyclerContactAdapter extends RecyclerView.Adapter<RecyclerContact
                     }
                 });
                 dialog.show();
+            }
+        });
+
+        holder.llRow.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                        .setTitle("Delete Contact")
+                        .setMessage("Are you sure you want to delete this contact?")
+                        .setIcon(R.drawable.baseline_auto_delete_24)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                arrContacts.remove(position);
+                                notifyItemRemoved(position);
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        });
+
+                        builder.show();
+
+                return true;
             }
         });
     }
